@@ -47,6 +47,7 @@ final class SignUpViewController: UIViewController {
         // 이메일 5자 이상 입력할 때 True
         // 단일 일때는 변수로하지말고 그냥 연달아 쓰기
         let email = emailTextField.rx.text.orEmpty
+            .distinctUntilChanged()
             .map { $0.count >= 5 }
         
         email
@@ -102,18 +103,35 @@ final class SignUpViewController: UIViewController {
         Observable.zip(validationLength, validationSame) { one, two -> [Bool] in
             return [one,two]
         }
+        .distinctUntilChanged()
         .bind(with: self, onNext: { owner, value in
             if value[0] == true , value[1] == true {
                 print("0000000 \(value[0]), \(value[1])")
                 owner.nextButton.isEnabled = true
                 owner.nextButton.backgroundColor = owner.color
+                owner.showAlert()
+                return
             }else {
                 print("11111111 \(value[0]), \(value[1])")
                 owner.nextButton.isEnabled = false
                 owner.nextButton.backgroundColor = owner.falsecolor
+                return
             }
         })
         .disposed(by: disposeBag)
+    }
+    
+    func showAlert() {
+        let alert = UIAlertController(
+            title: "가입가능",
+            message: "가입 가능한 이메일입니다",
+            preferredStyle: .alert
+        )
+        let defaultAction = UIAlertAction(title: "확인",
+                                          style: .default,
+                                          handler: nil)
+        alert.addAction(defaultAction)
+        present(alert, animated: true, completion: nil)
     }
 
     func configure() {
