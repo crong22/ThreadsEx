@@ -40,52 +40,24 @@ final class SignUpViewController: UIViewController {
     }
     
     private func bindRx() {
+        validationButton.isEnabled = false
         nextButton.isEnabled = false
         nextButton.backgroundColor = falsecolor
         
-        
         // 이메일 5자 이상 입력할 때 True
         // 단일 일때는 변수로하지말고 그냥 연달아 쓰기
-        let email = emailTextField.rx.text.orEmpty
+        emailTextField.rx.text.orEmpty
             .distinctUntilChanged()
             .map { $0.count >= 5 }
-        
-        email
             .bind(with: self) { owner, value in
                 // 5글자 이상이면 true 값 전달
+                print("5글지인지아닌지 : \(value)")
+                owner.validationButton.isEnabled = value ? value : !value
                 owner.validationLength.onNext(value)
-                print("validationLength",value)
+                owner.sameRx(value: value)
             }
             .disposed(by: disposeBag)
         
-        
-        // 이메일 일치할 때
-        
-        validationButton.rx.tap
-            // 이메일 입력 값 text로 return
-            .withLatestFrom(emailTextField.rx.text.orEmpty) { void, text in
-                return text
-            }
-            // UI(탭) 행동이므로, bind로 이어준다.
-            .bind(with: self) { owner, data in
-                //for문 사용해서 일치하는 이메일 있는지 확인!
-                for email in owner.list {
-                    if data == email {
-                        // 일치하면 validationSame = true
-                        print("일치")
-                        owner.validationSame.onNext(false)
-                        // 계속 돌지못하게 return 해줌
-                        return
-                    }else {
-                        print("불일치")
-                        // 불일치하면 validationSame = false
-                        owner.validationSame.onNext(true)
-                        owner.validation()
-                        return
-                    }
-                }
-            }
-            .disposed(by: disposeBag)
         
         
         // 다음 클릭 시 화면전환
@@ -98,27 +70,12 @@ final class SignUpViewController: UIViewController {
         
     }
     
-    func validation() {
-        // validationLength, validationSame
-        Observable.zip(validationLength, validationSame) { one, two -> [Bool] in
-            return [one,two]
-        }
-        .distinctUntilChanged()
-        .bind(with: self, onNext: { owner, value in
-            if value[0] == true , value[1] == true {
-                print("0000000 \(value[0]), \(value[1])")
-                owner.nextButton.isEnabled = true
-                owner.nextButton.backgroundColor = owner.color
-                owner.showAlert()
-                return
-            }else {
-                print("11111111 \(value[0]), \(value[1])")
-                owner.nextButton.isEnabled = false
-                owner.nextButton.backgroundColor = owner.falsecolor
-                return
-            }
-        })
-        .disposed(by: disposeBag)
+    private func sameRx(value : Bool) {
+
+    }
+    
+    private func validation() {
+
     }
     
     func showAlert() {
