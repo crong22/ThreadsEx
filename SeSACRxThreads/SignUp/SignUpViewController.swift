@@ -7,12 +7,25 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
-class SignUpViewController: UIViewController {
+// 2. 회원가입
+
+final class SignUpViewController: UIViewController {
 
     let emailTextField = SignTextField(placeholderText: "이메일을 입력해주세요")
     let validationButton = UIButton()
-    let nextButton = PointButton(title: "다음")
+    var nextButton = PointButton(title: "다음")
+    
+    let disposeBag = DisposeBag()
+    
+    var validationSame = BehaviorSubject(value: false)
+    var validationLength = BehaviorSubject(value: false)
+    
+    let list = ["Aaaaa", "Asdfg", "Qqqqq", "Qwert"]
+    let color : UIColor = .systemBlue
+    let falsecolor : UIColor = .systemRed
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,12 +35,85 @@ class SignUpViewController: UIViewController {
         configureLayout()
         configure()
         
-        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
-
+        bindRx()
+        
     }
     
-    @objc func nextButtonClicked() {
-        navigationController?.pushViewController(PasswordViewController(), animated: true)
+    private func bindRx() {
+        nextButton.isEnabled = false
+        nextButton.backgroundColor = falsecolor
+        
+        
+        // 이메일 5자 이상 입력할 때 True
+        // 단일 일때는 변수로하지말고 그냥 연달아 쓰기
+        let email = emailTextField.rx.text.orEmpty
+            .map { $0.count >= 5 }
+        
+        email
+            .bind(with: self) { owner, value in
+                // 5글자 이상이면 true 값 전달
+                owner.validationLength.onNext(value)
+                print("validationLength",value)
+            }
+            .disposed(by: disposeBag)
+        
+        
+        // 이메일 일치할 때
+        
+        validationButton.rx.tap
+            // 이메일 입력 값 text로 return
+            .withLatestFrom(emailTextField.rx.text.orEmpty) { void, text in
+                return text
+            }
+            // UI(탭) 행동이므로, bind로 이어준다.
+            .bind(with: self) { owner, data in
+                //for문 사용해서 일치하는 이메일 있는지 확인!
+                for email in owner.list {
+                    if data == email {
+                        // 일치하면 validationSame = true
+                        print("일치")
+                        owner.validationSame.onNext(false)
+                        // 계속 돌지못하게 return 해줌
+                        return
+                    }else {
+                        print("불일치")
+                        // 불일치하면 validationSame = false
+                        owner.validationSame.onNext(true)
+                        owner.validation()
+                        return
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
+        
+        
+        // 다음 클릭 시 화면전환
+        nextButton.rx.tap
+            .bind(with: self) { owner, _ in
+                let vc = PasswordViewController()
+                owner.navigationController?.pushViewController(vc, animated: true)
+            }
+            .disposed(by: disposeBag)
+        
+    }
+    
+    func validation() {
+        // validationLength, validationSame
+        Observable.zip(validationLength, validationSame) { one, two -> [Bool] in
+            return [one,two]
+        }
+        .bind(with: self, onNext: { owner, value in
+            if value[0] == true , value[1] == true {
+                print("0000000 \(value[0]), \(value[1])")
+                owner.nextButton.isEnabled = true
+                owner.nextButton.backgroundColor = owner.color
+            }else {
+                print("11111111 \(value[0]), \(value[1])")
+                owner.nextButton.isEnabled = false
+                owner.nextButton.backgroundColor = owner.falsecolor
+            }
+        })
+        .disposed(by: disposeBag)
     }
 
     func configure() {
