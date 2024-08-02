@@ -40,9 +40,6 @@ final class SignUpViewController: UIViewController {
     }
     
     private func bindRx() {
-        validationButton.isEnabled = false
-        nextButton.isEnabled = false
-        nextButton.backgroundColor = falsecolor
         
         // 이메일 5자 이상 입력할 때 True
         // 단일 일때는 변수로하지말고 그냥 연달아 쓰기
@@ -51,12 +48,18 @@ final class SignUpViewController: UIViewController {
             .map { $0.count >= 5 }
             .bind(with: self) { owner, value in
                 // 5글자 이상이면 true 값 전달
-                print("5글지인지아닌지 : \(value)")
+                print(value)
+                owner.nextButton.isEnabled = value ? value : !value
                 owner.validationButton.isEnabled = value ? value : !value
-                owner.validationLength.onNext(value)
-                owner.sameRx(value: value)
+                if value == true {
+                    print("2222")
+                    owner.sameRx()
+                }
             }
             .disposed(by: disposeBag)
+        
+        
+        
         
         
         
@@ -70,12 +73,24 @@ final class SignUpViewController: UIViewController {
         
     }
     
-    private func sameRx(value : Bool) {
-
+    private func sameRx() {
+        validationButton.rx.tap
+            .withLatestFrom(emailTextField.rx.text.orEmpty) {void, text in
+                return text }
+            .bind(with: self) { owner, data in
+                for email in owner.list {
+                    if email == data {
+                        return
+                    }else {
+                        owner.showAlert()
+                        return
+                    }
+                }
+            }
+            .disposed(by: disposeBag)
     }
     
     private func validation() {
-
     }
     
     func showAlert() {
