@@ -22,7 +22,7 @@ final class SignUpViewController: UIViewController {
     
     var validationSame = BehaviorSubject(value: false)
     var validationLength = BehaviorSubject(value: false)
-    
+    // 중복리스트
     let list = ["Aaaaa", "Asdfg", "Qqqqq", "Qwert"]
     let color : UIColor = .systemBlue
     let falsecolor : UIColor = .systemRed
@@ -52,15 +52,10 @@ final class SignUpViewController: UIViewController {
                 owner.nextButton.isEnabled = value ? value : !value
                 owner.validationButton.isEnabled = value ? value : !value
                 if value == true {
-                    print("2222")
                     owner.sameRx()
                 }
             }
             .disposed(by: disposeBag)
-        
-        
-        
-        
         
         
         // 다음 클릭 시 화면전환
