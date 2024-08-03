@@ -7,20 +7,31 @@
  
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class PhoneViewController: UIViewController {
    
     let phoneTextField = SignTextField(placeholderText: "연락처를 입력해주세요")
     let nextButton = PointButton(title: "다음")
     
+    let phoneData = BehaviorSubject(value: "010")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = Color.white
-        
+        phoneTextField.text = "\(phoneData)"
         configureLayout()
         
         nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
+        
+//        bind()
+    }
+    
+    private func bind() {
+        
+        
     }
     
     @objc func nextButtonClicked() {
