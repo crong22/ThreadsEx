@@ -35,6 +35,15 @@ class PhoneViewController: UIViewController {
             .bind(to: phoneTextField.rx.text)
             .disposed(by: disposeBag)
         
+        // 10글자 이상 입력가능
+        phoneTextField.rx.text.orEmpty
+            .map { $0.count > 9 }
+            .bind(with: self) { owner, value in
+                let color : UIColor = value ? .systemBlue : .systemRed
+                owner.nextButton.backgroundColor = color
+                owner.nextButton.isEnabled = value
+            }
+            .disposed(by: disposeBag)
     }
     
     @objc func nextButtonClicked() {
