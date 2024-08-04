@@ -7,6 +7,8 @@
  
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class BirthdayViewController: UIViewController {
     
@@ -43,7 +45,8 @@ class BirthdayViewController: UIViewController {
         }
         return label
     }()
-    
+    var yearData = BehaviorRelay(value: 2024)
+    var yearBool = BehaviorRelay(value: false)
     let monthLabel: UILabel = {
        let label = UILabel()
         label.text = "33월"
@@ -53,7 +56,8 @@ class BirthdayViewController: UIViewController {
         }
         return label
     }()
-    
+    let monthData = BehaviorRelay(value: 8)
+    var monthBool = BehaviorRelay(value: false)
     let dayLabel: UILabel = {
        let label = UILabel()
         label.text = "99일"
@@ -63,8 +67,14 @@ class BirthdayViewController: UIViewController {
         }
         return label
     }()
-  
+    let dayData = BehaviorRelay(value: 4)
+    var dayBool = BehaviorRelay(value: false)
+    
     let nextButton = PointButton(title: "가입하기")
+    
+    let disposeBag = DisposeBag()
+    
+    let birth = Birth()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,11 +83,98 @@ class BirthdayViewController: UIViewController {
         
         configureLayout()
         
-        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
+        bind()
+        
     }
     
-    @objc func nextButtonClicked() {
-        navigationController?.pushViewController(SearchViewController(), animated: true)
+    
+    
+    private func bind() {
+        
+        birthDayPicker.rx.date
+            .bind(with: self) { owner, data in
+                let dayData = Calendar.current.dateComponents([.day, .month, .year], from: data)
+                
+                owner.yearData.accept(dayData.year!)
+                owner.monthData.accept(dayData.month!)
+                owner.dayData.accept(dayData.day!)
+                
+            }
+            .disposed(by: disposeBag)
+        
+        yearData
+            .bind(with: self, onNext: { owner, year in
+
+                if year <= ( owner.birth.yearCurrent - 17 ) {
+                    owner.yearLabel.text = "\(year)년"
+                    owner.yearBool.accept(true)
+//                    print("yearbool,  \(owner.yearBool)")
+                    
+                }else {
+
+                    owner.yearLabel.text = "\(year)년"
+                    owner.yearBool.accept(false)
+
+                }
+            })
+            .disposed(by: disposeBag)
+
+        
+        monthData
+            .bind(with: self, onNext: { owner, month in
+
+                if month <=  owner.birth.monthCurrent  {
+                    owner.monthLabel.text = "\(month)월"
+                    owner.monthBool.accept(true)
+//                    print("monthbool , \(owner.monthBool)")
+
+                }else {
+
+                    owner.monthLabel.text = "\(month)월"
+                    owner.monthBool.accept(false)
+
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        dayData
+            .bind(with: self, onNext: { owner, day in
+
+                if day <=  owner.birth.dayCurrent  {
+                    owner.dayLabel.text = "\(day)월"
+                    owner.dayBool.accept(true)
+//                    print("daybool,  \(owner.dayBool)")
+                }else {
+
+                    owner.dayLabel.text = "\(day)월"
+                    owner.dayBool.accept(false)
+                }
+            })
+            .disposed(by: disposeBag)
+        
+        Observable.combineLatest(yearBool, monthBool, dayBool) { one,two,three -> [Bool] in
+            return [one,two,three]
+        }
+        .bind(with: self) { owner, datebool in
+            if datebool[0] == true , datebool[1] == true, datebool[2] == true {
+                owner.infoLabel.textColor = .systemBlue
+                owner.nextButton.isEnabled = true
+                owner.nextButton.backgroundColor = .systemBlue
+                return
+            }else {
+                owner.infoLabel.textColor = .systemRed
+                owner.nextButton.isEnabled = false
+                owner.nextButton.backgroundColor = .systemRed
+                return
+            }
+        }
+        .disposed(by: disposeBag)
+        
+        nextButton.rx.tap
+            .bind(with: self) { owner, _ in
+                owner.navigationController?.pushViewController(SearchViewController(), animated: true)
+            }
+        
     }
 
     
