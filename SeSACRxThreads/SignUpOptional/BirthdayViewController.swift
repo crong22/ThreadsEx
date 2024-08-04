@@ -164,7 +164,7 @@ class BirthdayViewController: UIViewController {
             }else {
                 owner.infoLabel.textColor = .systemRed
                 owner.nextButton.isEnabled = false
-                owner.nextButton.backgroundColor = .systemRed
+                owner.nextButton.backgroundColor = .lightGray
                 return
             }
         }
@@ -172,6 +172,7 @@ class BirthdayViewController: UIViewController {
         
         nextButton.rx.tap
             .bind(with: self) { owner, _ in
+                print("완료")
                 owner.navigationController?.pushViewController(SearchViewController(), animated: true)
             }
         

@@ -38,11 +38,17 @@ class PhoneViewController: UIViewController {
             .bind(to: phoneTextField.rx.text)
             .disposed(by: disposeBag)
         
+        // 숫자 필터
+        phoneTextField.rx.text.orEmpty
+            .map { $0.filter { "0123456789".contains($0) } }
+            .bind(to: phoneTextField.rx.text)
+            .disposed(by: disposeBag)
+        
         // 10글자 이상 입력가능
         phoneTextField.rx.text.orEmpty
             .map { $0.count > 9 }
             .bind(with: self) { owner, value in
-                let color : UIColor = value ? .systemBlue : .systemRed
+                let color : UIColor = value ? .systemBlue : .lightGray
                 owner.nextButton.backgroundColor = color
                 owner.nextButton.isEnabled = value
             }
