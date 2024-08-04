@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 
 class PasswordViewController: UIViewController {
-   
+    
     let passwordTextField = SignTextField(placeholderText: "비밀번호를 입력해주세요")
     let nextButton = PointButton(title: "다음")
     
@@ -22,24 +22,24 @@ class PasswordViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         view.backgroundColor = Color.white
         
         configureLayout()
         
         bind()
-         
-        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
+        
+        //        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
     }
     
-    @objc func nextButtonClicked() {
-        navigationController?.pushViewController(PhoneViewController(), animated: true)
-    }
+    //    @objc func nextButtonClicked() {
+    //        navigationController?.pushViewController(PhoneViewController(), animated: true)
+    //    }
     
     func configureLayout() {
         view.addSubview(passwordTextField)
         view.addSubview(nextButton)
-         
+        
         passwordTextField.snp.makeConstraints { make in
             make.height.equalTo(50)
             make.top.equalTo(view.safeAreaLayoutGuide).offset(200)
@@ -84,10 +84,10 @@ class PasswordViewController: UIViewController {
             .rx
             .tap
             .bind(with: self) { owner, _ in
-                owner.showAlert()
+                owner.navigationController?.pushViewController(PhoneViewController(), animated: true)
             }
     }
-
+    
     
     private func showAlert() {
         let alert = UIAlertController(
