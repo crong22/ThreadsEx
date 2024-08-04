@@ -48,7 +48,8 @@ final class SignUpViewController: UIViewController {
             .map { $0.count >= 5 }
             .bind(with: self) { owner, value in
                 // 5글자 이상이면 true 값 전달
-                print(value)
+                let color : UIColor = value ? .systemBlue : .systemRed
+                owner.nextButton.backgroundColor  = color
                 owner.nextButton.isEnabled = value ? value : !value
                 owner.validationButton.isEnabled = value ? value : !value
                 if value == true {

@@ -21,7 +21,10 @@ class PhoneViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        phoneTextField.keyboardType = .numberPad
+        
         view.backgroundColor = Color.white
+        
         configureLayout()
         
         nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
@@ -67,5 +70,8 @@ class PhoneViewController: UIViewController {
             make.horizontalEdges.equalTo(view.safeAreaLayoutGuide).inset(20)
         }
     }
+    
+
 
 }
+
