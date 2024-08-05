@@ -13,9 +13,11 @@ class PasswordViewModel {
     
     struct Input {
         let text : ControlProperty<String?> //passwordTextField.rx.text
+        let tap : ControlEvent<Void>
     }
     
     struct Output {
+        let tap : ControlEvent<Void>
         let validText : Observable<String>
         let validation : Observable<Bool>
     }
@@ -26,6 +28,7 @@ class PasswordViewModel {
         
         let validText = Observable.just("8자 이상 입력해주세요")
         
-        return Output(validText: validText, validation: validation)
+        
+        return Output(tap: input.tap, validText: validText, validation: validation)
     }
 }

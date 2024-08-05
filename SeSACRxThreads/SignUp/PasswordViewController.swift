@@ -58,7 +58,7 @@ class PasswordViewController: UIViewController {
     
     private func bind() {
         
-        let input = PasswordViewModel.Input(text: passwordTextField.rx.text)
+        let input = PasswordViewModel.Input(text: passwordTextField.rx.text, tap: nextButton.rx.tap)
         let output = viewModel.transform(input: input)
         
         output.validText
@@ -76,9 +76,7 @@ class PasswordViewController: UIViewController {
             }
             .disposed(by: disposeBag)
         
-        nextButton
-            .rx
-            .tap
+        output.tap
             .bind(with: self) { owner, _ in
                 owner.navigationController?.pushViewController(PhoneViewController(), animated: true)
             }
