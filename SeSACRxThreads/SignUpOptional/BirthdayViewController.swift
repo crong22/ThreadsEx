@@ -45,7 +45,6 @@ class BirthdayViewController: UIViewController {
         }
         return label
     }()
-//    let yearData = BehaviorRelay(value: 2024)
     var yearBool = BehaviorRelay(value: false)
     let monthLabel: UILabel = {
        let label = UILabel()
@@ -56,7 +55,6 @@ class BirthdayViewController: UIViewController {
         }
         return label
     }()
-//    let monthData = BehaviorRelay(value: 8)
     var monthBool = BehaviorRelay(value: false)
     let dayLabel: UILabel = {
        let label = UILabel()
@@ -67,7 +65,6 @@ class BirthdayViewController: UIViewController {
         }
         return label
     }()
-//    let dayData = BehaviorRelay(value: 4)
     var dayBool = BehaviorRelay(value: false)
     
     let nextButton = PointButton(title: "가입하기")

@@ -14,10 +14,11 @@ class PhoneViewController: UIViewController {
    
     let phoneTextField = SignTextField(placeholderText: "연락처를 입력해주세요")
     let nextButton = PointButton(title: "다음")
-    
-    let phoneData = BehaviorSubject(value: "010")
-    
+
     let disposeBag = DisposeBag()
+    
+    let viewModel = PhoneViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -27,37 +28,40 @@ class PhoneViewController: UIViewController {
         
         configureLayout()
         
-        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
         
         bind()
     }
     
     private func bind() {
+        let input = PhoneViewModel.Input(tap: nextButton.rx.tap, text: phoneTextField.rx.text)
+        let output = viewModel.tranform(input: input)
         
-        phoneData
+        output.validText
             .bind(to: phoneTextField.rx.text)
             .disposed(by: disposeBag)
         
         // 숫자 필터
-        phoneTextField.rx.text.orEmpty
-            .map { $0.filter { "0123456789".contains($0) } }
+        output.validationText
             .bind(to: phoneTextField.rx.text)
             .disposed(by: disposeBag)
         
         // 10글자 이상 입력가능
-        phoneTextField.rx.text.orEmpty
-            .map { $0.count > 9 }
+        output.validation
             .bind(with: self) { owner, value in
                 let color : UIColor = value ? .systemBlue : .lightGray
                 owner.nextButton.backgroundColor = color
                 owner.nextButton.isEnabled = value
             }
             .disposed(by: disposeBag)
+        
+        // nextbutton
+        output.tap
+            .bind(with: self) { owner, _ in
+                owner.navigationController?.pushViewController(NicknameViewController(), animated: true)
+            }
+            .disposed(by: disposeBag)
     }
-    
-    @objc func nextButtonClicked() {
-        navigationController?.pushViewController(NicknameViewController(), animated: true)
-    }
+
 
     
     func configureLayout() {
