@@ -17,8 +17,9 @@ class PasswordViewController: UIViewController {
     
     let descriptionLabel = UILabel()
     
-    let validText = Observable.just("8자 이상 입력해주세요")
     let disposeBag = DisposeBag()
+    
+    let viewModel = PasswordViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,14 +30,9 @@ class PasswordViewController: UIViewController {
         
         bind()
         
-        //        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
     }
-    
-    //    @objc func nextButtonClicked() {
-    //        navigationController?.pushViewController(PhoneViewController(), animated: true)
-    //    }
-    
-    func configureLayout() {
+
+    private func configureLayout() {
         view.addSubview(passwordTextField)
         view.addSubview(nextButton)
         
@@ -62,7 +58,10 @@ class PasswordViewController: UIViewController {
     
     private func bind() {
         
-        validText
+        let input = PasswordViewModel.Input()
+        let output = viewModel.transform(input: input)
+        
+        output.validText
             .bind(to: descriptionLabel.rx.text)
             .disposed(by: disposeBag)
         
@@ -86,6 +85,7 @@ class PasswordViewController: UIViewController {
             .bind(with: self) { owner, _ in
                 owner.navigationController?.pushViewController(PhoneViewController(), animated: true)
             }
+            .disposed(by: disposeBag)
     }
     
     
