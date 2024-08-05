@@ -34,6 +34,7 @@
 		D854C23B2C5FA4FE00D377B7 /* Birthday.swift in Sources */ = {isa = PBXBuildFile; fileRef = D854C23A2C5FA4FE00D377B7 /* Birthday.swift */; };
 		D854C2412C60DA9600D377B7 /* PasswordViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D854C2402C60DA9600D377B7 /* PasswordViewModel.swift */; };
 		D854C2432C60DD4E00D377B7 /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D854C2422C60DD4E00D377B7 /* SignUpViewModel.swift */; };
+		D854C2452C60DF1C00D377B7 /* BirthdayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D854C2442C60DF1C00D377B7 /* BirthdayViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		D854C23A2C5FA4FE00D377B7 /* Birthday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Birthday.swift; sourceTree = "<group>"; };
 		D854C2402C60DA9600D377B7 /* PasswordViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordViewModel.swift; sourceTree = "<group>"; };
 		D854C2422C60DD4E00D377B7 /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
+		D854C2442C60DF1C00D377B7 /* BirthdayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BirthdayViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +206,7 @@
 				041280702AEFAD3D00972552 /* PhoneViewController.swift */,
 				041280722AEFAD4B00972552 /* NicknameViewController.swift */,
 				D854C23A2C5FA4FE00D377B7 /* Birthday.swift */,
+				D854C2442C60DF1C00D377B7 /* BirthdayViewModel.swift */,
 			);
 			path = SignUpOptional;
 			sourceTree = "<group>";
@@ -366,6 +369,7 @@
 				041280562AEFA04800972552 /* SignInViewController.swift in Sources */,
 				D854C23B2C5FA4FE00D377B7 /* Birthday.swift in Sources */,
 				041280282AEF9BAB00972552 /* ViewController.swift in Sources */,
+				D854C2452C60DF1C00D377B7 /* BirthdayViewModel.swift in Sources */,
 				041280632AEFA0CE00972552 /* PointButton.swift in Sources */,
 				04F6DC022C5B0D8200667F4D /* DetailViewController.swift in Sources */,
 				041280242AEF9BAB00972552 /* AppDelegate.swift in Sources */,

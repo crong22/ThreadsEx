@@ -45,7 +45,7 @@ class BirthdayViewController: UIViewController {
         }
         return label
     }()
-    var yearData = BehaviorRelay(value: 2024)
+//    let yearData = BehaviorRelay(value: 2024)
     var yearBool = BehaviorRelay(value: false)
     let monthLabel: UILabel = {
        let label = UILabel()
@@ -56,7 +56,7 @@ class BirthdayViewController: UIViewController {
         }
         return label
     }()
-    let monthData = BehaviorRelay(value: 8)
+//    let monthData = BehaviorRelay(value: 8)
     var monthBool = BehaviorRelay(value: false)
     let dayLabel: UILabel = {
        let label = UILabel()
@@ -67,7 +67,7 @@ class BirthdayViewController: UIViewController {
         }
         return label
     }()
-    let dayData = BehaviorRelay(value: 4)
+//    let dayData = BehaviorRelay(value: 4)
     var dayBool = BehaviorRelay(value: false)
     
     let nextButton = PointButton(title: "가입하기")
@@ -75,6 +75,8 @@ class BirthdayViewController: UIViewController {
     let disposeBag = DisposeBag()
     
     let birth = Birth()
+    
+    let viewModel = BirthdayViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,27 +93,15 @@ class BirthdayViewController: UIViewController {
     
     private func bind() {
         
-        birthDayPicker.rx.date
-            .bind(with: self) { owner, data in
-                let dayData = Calendar.current.dateComponents([.day, .month, .year], from: data)
-                
-                owner.yearData.accept(dayData.year!)
-                owner.monthData.accept(dayData.month!)
-                owner.dayData.accept(dayData.day!)
-                
-            }
-            .disposed(by: disposeBag)
+        let input = BirthdayViewModel.Input(text: birthDayPicker.rx.date)
+        let output = viewModel.tranform(input: input)
         
-        yearData
+        output.year
             .bind(with: self, onNext: { owner, year in
-
                 if year <= ( owner.birth.yearCurrent - 17 ) {
                     owner.yearLabel.text = "\(year)년"
                     owner.yearBool.accept(true)
-//                    print("yearbool,  \(owner.yearBool)")
-                    
                 }else {
-
                     owner.yearLabel.text = "\(year)년"
                     owner.yearBool.accept(false)
 
@@ -120,32 +110,24 @@ class BirthdayViewController: UIViewController {
             .disposed(by: disposeBag)
 
         
-        monthData
+        output.month
             .bind(with: self, onNext: { owner, month in
-
                 if month <=  owner.birth.monthCurrent  {
                     owner.monthLabel.text = "\(month)월"
                     owner.monthBool.accept(true)
-//                    print("monthbool , \(owner.monthBool)")
-
                 }else {
-
                     owner.monthLabel.text = "\(month)월"
                     owner.monthBool.accept(false)
-
                 }
             })
             .disposed(by: disposeBag)
         
-        dayData
+        output.day
             .bind(with: self, onNext: { owner, day in
-
                 if day <=  owner.birth.dayCurrent  {
                     owner.dayLabel.text = "\(day)월"
                     owner.dayBool.accept(true)
-//                    print("daybool,  \(owner.dayBool)")
                 }else {
-
                     owner.dayLabel.text = "\(day)월"
                     owner.dayBool.accept(false)
                 }
