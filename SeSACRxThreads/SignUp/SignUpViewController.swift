@@ -27,6 +27,9 @@ final class SignUpViewController: UIViewController {
     let color : UIColor = .systemBlue
     let falsecolor : UIColor = .systemRed
     
+    // viewModel
+    let viewModel = SignUpViewModel()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -40,12 +43,13 @@ final class SignUpViewController: UIViewController {
     }
     
     private func bindRx() {
+        let input = SignUpViewModel.Input(tap: nextButton.rx.tap, text: emailTextField.rx.text)
+        
+        let output = viewModel.tranform(input: input)
         
         // 이메일 5자 이상 입력할 때 True
         // 단일 일때는 변수로하지말고 그냥 연달아 쓰기
-        emailTextField.rx.text.orEmpty
-            .distinctUntilChanged()
-            .map { $0.count >= 5 }
+        output.validation
             .bind(with: self) { owner, value in
                 // 5글자 이상이면 true 값 전달
                 let color : UIColor = value ? .systemBlue : .lightGray
@@ -60,7 +64,7 @@ final class SignUpViewController: UIViewController {
         
         
         // 다음 클릭 시 화면전환
-        nextButton.rx.tap
+        output.tap
             .bind(with: self) { owner, _ in
                 let vc = PasswordViewController()
                 owner.navigationController?.pushViewController(vc, animated: true)
