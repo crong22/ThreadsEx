@@ -15,9 +15,11 @@ class BirthdayViewModel {
     
     struct Input {
         let text : ControlProperty<Date> // birthDayPicker.rx.date
+        let tap : ControlEvent<Void>
     }
     
     struct Output {
+        let tap : ControlEvent<Void>
         let year : BehaviorRelay<Int>
         let month : BehaviorRelay<Int>
         let day : BehaviorRelay<Int>
@@ -39,6 +41,6 @@ class BirthdayViewModel {
             }
             .disposed(by: disposeBag)
         
-        return Output(year: year, month: month, day: day)
+        return Output(tap: input.tap, year: year, month: month, day: day)
     }
 }

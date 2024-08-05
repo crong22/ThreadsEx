@@ -93,7 +93,7 @@ class BirthdayViewController: UIViewController {
     
     private func bind() {
         
-        let input = BirthdayViewModel.Input(text: birthDayPicker.rx.date)
+        let input = BirthdayViewModel.Input(text: birthDayPicker.rx.date, tap: nextButton.rx.tap)
         let output = viewModel.tranform(input: input)
         
         output.year
@@ -152,11 +152,12 @@ class BirthdayViewController: UIViewController {
         }
         .disposed(by: disposeBag)
         
-        nextButton.rx.tap
+        output.tap
             .bind(with: self) { owner, _ in
                 print("완료")
                 owner.navigationController?.pushViewController(SearchViewController(), animated: true)
             }
+            .disposed(by: disposeBag)
         
     }
 
