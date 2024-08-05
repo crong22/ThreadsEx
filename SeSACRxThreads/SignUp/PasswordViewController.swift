@@ -58,21 +58,18 @@ class PasswordViewController: UIViewController {
     
     private func bind() {
         
-        let input = PasswordViewModel.Input()
+        let input = PasswordViewModel.Input(text: passwordTextField.rx.text)
         let output = viewModel.transform(input: input)
         
         output.validText
             .bind(to: descriptionLabel.rx.text)
             .disposed(by: disposeBag)
         
-        let validation = passwordTextField.rx.text.orEmpty
-            .map { $0.count > 7 }
-        
-        validation
+        output.validation
             .bind(to: nextButton.rx.isEnabled, descriptionLabel.rx.isHidden)
             .disposed(by: disposeBag)
         
-        validation
+        output.validation
             .bind(with: self) { owner, value in
                 let color : UIColor = value ? .systemPink : .systemGray
                 owner.nextButton.backgroundColor  = color
