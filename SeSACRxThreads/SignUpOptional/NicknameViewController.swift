@@ -32,7 +32,7 @@ class NicknameViewController: UIViewController {
         
         nextButton.rx.tap
             .bind(with: self) { owner, _ in
-                navigationController?.pushViewController(BirthdayViewController(), animated: true)
+                owner.navigationController?.pushViewController(BirthdayViewController(), animated: true)
             }
             .disposed(by: disposeBag)
     }
