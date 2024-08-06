@@ -49,6 +49,7 @@ class PhoneViewController: UIViewController {
         output.validation
             .bind(with: self) { owner, value in
                 let color : UIColor = value ? .systemBlue : .lightGray
+                
                 owner.nextButton.backgroundColor = color
                 owner.nextButton.isEnabled = value
             }

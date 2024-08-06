@@ -7,11 +7,15 @@
 
 import UIKit
 import SnapKit
+import RxSwift
+import RxCocoa
 
 class NicknameViewController: UIViewController {
    
     let nicknameTextField = SignTextField(placeholderText: "닉네임을 입력해주세요")
     let nextButton = PointButton(title: "다음")
+    
+    let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,16 +24,20 @@ class NicknameViewController: UIViewController {
         
         configureLayout()
        
-        nextButton.addTarget(self, action: #selector(nextButtonClicked), for: .touchUpInside)
+        bind()
 
     }
     
-    @objc func nextButtonClicked() {
-        navigationController?.pushViewController(BirthdayViewController(), animated: true)
+    private func bind() {
+        
+        nextButton.rx.tap
+            .bind(with: self) { owner, _ in
+                navigationController?.pushViewController(BirthdayViewController(), animated: true)
+            }
+            .disposed(by: disposeBag)
     }
-
     
-    func configureLayout() {
+    private func configureLayout() {
         view.addSubview(nicknameTextField)
         view.addSubview(nextButton)
          

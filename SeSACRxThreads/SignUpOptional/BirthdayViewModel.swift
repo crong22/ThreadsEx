@@ -30,7 +30,6 @@ class BirthdayViewModel {
         let month = BehaviorRelay(value: 8)
         let day = BehaviorRelay(value: 4)
         
-        
         input.text
             .bind(with: self) { owner, data in
                 
